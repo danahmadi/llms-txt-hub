@@ -3,15 +3,20 @@
 import { existsSync, readFileSync } from 'node:fs'
 import { mkdir, readdir, writeFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
-import FirecrawlApp from '@mendable/firecrawl-js'
 import chalk from 'chalk'
 import { Command } from 'commander'
 import { config } from 'dotenv'
 import inquirer from 'inquirer'
+import { generateLLMsText as requestLLMsText } from './firecrawl-llmstxt.js'
 
 // Load environment variables from .env file
 config()
 
+/**
+ * Finds the workspace containing the generator's output directory.
+ * @param currentPath Directory from which to search upwards.
+ * @returns The matching workspace root.
+ */
 function findWorkspaceRoot(currentPath: string): string {
   // Keep going up until we find package.json with "name": "llms-txt-hub"
   const packageJsonPath = join(currentPath, 'package.json')
@@ -48,6 +53,10 @@ program
   .option('-m, --max-urls <number>', 'Maximum URLs to analyze', '50')
   .version('1.0.0')
 
+/**
+ * Lists existing output folders in the current workspace.
+ * @returns Available folder names.
+ */
 async function getExistingFolders() {
   const workspaceRoot = findWorkspaceRoot(process.cwd())
   const basePath = resolve(workspaceRoot, 'content/unofficial')
@@ -61,6 +70,11 @@ async function getExistingFolders() {
   }
 }
 
+/**
+ * Prompts for an existing or new output folder.
+ * @param folders Existing output folder names.
+ * @returns The selected folder name.
+ */
 async function selectFolder(folders: string[]) {
   const workspaceRoot = findWorkspaceRoot(process.cwd())
   console.log(chalk.gray('Workspace root:', workspaceRoot))
@@ -100,6 +114,14 @@ async function selectFolder(folders: string[]) {
   return choice
 }
 
+/**
+ * Generates and saves the two text files using the existing provider operation.
+ * @param apiKey Optional CLI credential overriding the environment value.
+ * @param url Website supplied by the user.
+ * @param maxUrls Maximum URLs supplied by the user.
+ * @param folder Selected output folder.
+ * @returns Completion after both files have been written.
+ */
 async function generateLLMsText(
   apiKey: string | undefined,
   url: string,
@@ -116,19 +138,13 @@ async function generateLLMsText(
       )
     }
 
-    const firecrawl = new FirecrawlApp({ apiKey: finalApiKey })
     const outputDir = resolve(workspaceRoot, 'content/unofficial', folder)
 
     console.log(chalk.blue('Generating LLMs text files...'))
 
-    const params = {
-      maxUrls,
-      showFullText: true
-    }
+    const results = await requestLLMsText(finalApiKey, url, maxUrls)
 
-    const results = await firecrawl.generateLLMsText(url, params)
-
-    if (!results.success) {
+    if (!results.success || !results.data) {
       throw new Error(results.error || 'Unknown error occurred')
     }
 
@@ -154,6 +170,10 @@ async function generateLLMsText(
   }
 }
 
+/**
+ * Runs the existing interactive generator workflow.
+ * @returns Completion of the generation command.
+ */
 async function main() {
   program.parse()
   const options = program.opts()
