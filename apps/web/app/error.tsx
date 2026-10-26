@@ -5,10 +5,19 @@ import { logger } from '@thedaviddias/logging'
 import type { ErrorInfo } from 'next/error'
 import { useEffect } from 'react'
 
+/**
+ * Render a safe fallback and retry through the Next.js error boundary.
+ * @param props - The thrown value and framework recovery callbacks.
+ * @returns The error page with a retry action.
+ */
 // biome-ignore lint/suspicious/noShadowRestrictedNames: Next.js requires this component to be named Error
-export default function Error({ error, unstable_retry }: ErrorInfo) {
+export default function Error({ error, retry }: ErrorInfo) {
   useEffect(() => {
-    logger.error(error)
+    logger.error(
+      error instanceof globalThis.Error || typeof error === 'string'
+        ? error
+        : 'An unexpected application error occurred'
+    )
   }, [error])
 
   return (
@@ -24,7 +33,7 @@ export default function Error({ error, unstable_retry }: ErrorInfo) {
           <p className="mx-auto mt-5 max-w-xl text-center text-base font-medium text-neutral-400">
             An unexpected error occurred. Please try again later.
           </p>
-          <Button onClick={() => unstable_retry()} className="mt-8">
+          <Button onClick={() => retry()} className="mt-8">
             Try again
           </Button>
         </div>
