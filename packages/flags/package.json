@@ -11,8 +11,8 @@
     "@thedaviddias/analytics": "workspace:*",
     "@thedaviddias/auth": "workspace:*",
     "@thedaviddias/design-system": "workspace:*",
-    "@vercel/flags": "^3.1.1",
     "@vercel/toolbar": "catalog:",
+    "flags": "4.0.6",
     "react": "catalog:",
     "zod": "catalog:"
   },

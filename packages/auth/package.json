@@ -29,7 +29,7 @@
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.37.3",
+    "@clerk/nextjs": "^6.39.8",
     "react": "catalog:",
     "react-dom": "catalog:",
     "server-only": "catalog:"

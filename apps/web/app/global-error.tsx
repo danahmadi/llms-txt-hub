@@ -9,10 +9,10 @@ import { useEffect } from 'react'
 /**
  * Global error boundary component that captures exceptions and provides a retry action
  *
- * @param props - Error properties containing the error and unstable_retry function
+ * @param props - Error properties containing the error and retry function
  * @returns Error page with retry button
  */
-const GlobalError = ({ error, unstable_retry }: ErrorInfo) => {
+const GlobalError = ({ error, retry }: ErrorInfo) => {
   useEffect(() => {
     captureException(error)
   }, [error])
@@ -21,7 +21,7 @@ const GlobalError = ({ error, unstable_retry }: ErrorInfo) => {
     <html lang="en" className={fonts}>
       <body>
         <h1 className="text-3xl font-bold text-center mt-8">Oops, something went wrong</h1>
-        <Button onClick={() => unstable_retry()}>Try again</Button>
+        <Button onClick={() => retry()}>Try again</Button>
       </body>
     </html>
   )
