@@ -1,5 +1,5 @@
 import { currentUser } from '@thedaviddias/auth/server'
-import { flag } from '@vercel/flags/next'
+import { flag } from 'flags/next'
 
 /**
  * Create a feature flag resolver backed by the current authenticated user.
@@ -8,22 +8,22 @@ import { flag } from '@vercel/flags/next'
  * @returns A configured Vercel flag instance
  */
 export const createFlag = (key: string) =>
-  flag({
+  flag<boolean>({
     key,
     defaultValue: false,
     async decide() {
       const user = await currentUser()
 
       if (!user?.id) {
-        return this.defaultValue as boolean
+        return this.defaultValue ?? false
       }
 
       // Since we don't have a feature flag system integrated,
       // always return the default value for now
-      return this.defaultValue as boolean
+      return this.defaultValue ?? false
 
       // When you implement a real feature flag system, uncomment and adapt:
       // const isEnabled = await yourFeatureFlagSystem.isFeatureEnabled(key, user.id)
-      // return isEnabled ?? (this.defaultValue as boolean)
+      // return isEnabled ?? this.defaultValue ?? false
     }
   })

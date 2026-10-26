@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict'
 import { createRequire } from 'node:module'
 
-const nextRequire = createRequire(import.meta.resolve('next'))
+const webRequire = createRequire(new URL('../apps/web/package.json', import.meta.url))
+const nextRequire = createRequire(webRequire.resolve('next'))
 const { getSharp } = nextRequire('next/dist/server/image-optimizer/transform')
 const sharp = getSharp(1, false)
 const input = await sharp({
