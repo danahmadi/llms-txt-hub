@@ -49,7 +49,7 @@ const rawFields = (formData: FormData) => ({
 const normalizedFields = (value: unknown): ParsedSubmissionInput => {
   const parsed = submitActionSchema.safeParse(value)
   if (!parsed.success) {
-    return { message: parsed.error.errors[0]?.message ?? 'Invalid submission details.', ok: false }
+    return { message: parsed.error.issues[0]?.message ?? 'Invalid submission details.', ok: false }
   }
   const sanitized = submitActionSchema.safeParse({
     ...parsed.data,
@@ -58,7 +58,7 @@ const normalizedFields = (value: unknown): ParsedSubmissionInput => {
   })
   if (!sanitized.success) {
     return {
-      message: sanitized.error.errors[0]?.message ?? 'Invalid submission details.',
+      message: sanitized.error.issues[0]?.message ?? 'Invalid submission details.',
       ok: false
     }
   }
