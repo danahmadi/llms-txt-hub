@@ -1,0 +1,710 @@
+[
+  {
+    "name": "immediate completion",
+    "replies": [
+      {
+        "status": 200,
+        "body": {
+          "success": true,
+          "id": "fixture-job"
+        }
+      },
+      {
+        "status": 200,
+        "body": {
+          "success": true,
+          "status": "completed",
+          "data": {
+            "llmstxt": "# Summary\n☀️",
+            "llmsfulltxt": "# Full\n"
+          }
+        }
+      }
+    ],
+    "expected": {
+      "result": {
+        "success": true,
+        "status": "completed",
+        "data": {
+          "llmstxt": "# Summary\n☀️",
+          "llmsfulltxt": "# Full\n"
+        }
+      }
+    },
+    "calls": [
+      {
+        "method": "POST",
+        "url": "https://api.firecrawl.dev/v1/llmstxt",
+        "body": {
+          "url": "https://example.com",
+          "maxUrls": 50,
+          "showFullText": true,
+          "origin": "js-sdk@1.25.1"
+        },
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      },
+      {
+        "method": "GET",
+        "url": "https://api.firecrawl.dev/v1/llmstxt/fixture-job",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      }
+    ]
+  },
+  {
+    "name": "processing then completion",
+    "replies": [
+      {
+        "status": 200,
+        "body": {
+          "success": true,
+          "id": "fixture-job"
+        }
+      },
+      {
+        "status": 200,
+        "body": {
+          "success": true,
+          "status": "processing"
+        }
+      },
+      {
+        "status": 200,
+        "body": {
+          "success": true,
+          "status": "completed",
+          "data": {
+            "llmstxt": "# Summary\n☀️",
+            "llmsfulltxt": "# Full\n"
+          }
+        }
+      }
+    ],
+    "expected": {
+      "result": {
+        "success": true,
+        "status": "completed",
+        "data": {
+          "llmstxt": "# Summary\n☀️",
+          "llmsfulltxt": "# Full\n"
+        }
+      }
+    },
+    "calls": [
+      {
+        "method": "POST",
+        "url": "https://api.firecrawl.dev/v1/llmstxt",
+        "body": {
+          "url": "https://example.com",
+          "maxUrls": 50,
+          "showFullText": true,
+          "origin": "js-sdk@1.25.1"
+        },
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      },
+      {
+        "method": "GET",
+        "url": "https://api.firecrawl.dev/v1/llmstxt/fixture-job",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      },
+      {
+        "method": "GET",
+        "url": "https://api.firecrawl.dev/v1/llmstxt/fixture-job",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      }
+    ]
+  },
+  {
+    "name": "API start failure",
+    "replies": [
+      {
+        "status": 200,
+        "body": {
+          "success": false,
+          "error": "Fixture failure"
+        }
+      }
+    ],
+    "expected": {
+      "result": {
+        "success": false,
+        "error": "Fixture failure"
+      }
+    },
+    "calls": [
+      {
+        "method": "POST",
+        "url": "https://api.firecrawl.dev/v1/llmstxt",
+        "body": {
+          "url": "https://example.com",
+          "maxUrls": 50,
+          "showFullText": true,
+          "origin": "js-sdk@1.25.1"
+        },
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      }
+    ]
+  },
+  {
+    "name": "missing job ID",
+    "replies": [
+      {
+        "status": 200,
+        "body": {
+          "success": true
+        }
+      }
+    ],
+    "expected": {
+      "error": "Failed to start LLMs.txt generation. No job ID returned."
+    },
+    "calls": [
+      {
+        "method": "POST",
+        "url": "https://api.firecrawl.dev/v1/llmstxt",
+        "body": {
+          "url": "https://example.com",
+          "maxUrls": 50,
+          "showFullText": true,
+          "origin": "js-sdk@1.25.1"
+        },
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      }
+    ]
+  },
+  {
+    "name": "failed job result",
+    "replies": [
+      {
+        "status": 200,
+        "body": {
+          "success": true,
+          "id": "fixture-job"
+        }
+      },
+      {
+        "status": 200,
+        "body": {
+          "success": false,
+          "status": "failed",
+          "error": "Fixture failure"
+        }
+      }
+    ],
+    "expected": {
+      "result": {
+        "success": false,
+        "status": "failed",
+        "error": "Fixture failure"
+      }
+    },
+    "calls": [
+      {
+        "method": "POST",
+        "url": "https://api.firecrawl.dev/v1/llmstxt",
+        "body": {
+          "url": "https://example.com",
+          "maxUrls": 50,
+          "showFullText": true,
+          "origin": "js-sdk@1.25.1"
+        },
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      },
+      {
+        "method": "GET",
+        "url": "https://api.firecrawl.dev/v1/llmstxt/fixture-job",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      }
+    ]
+  },
+  {
+    "name": "failed job throws",
+    "replies": [
+      {
+        "status": 200,
+        "body": {
+          "success": true,
+          "id": "fixture-job"
+        }
+      },
+      {
+        "status": 200,
+        "body": {
+          "success": true,
+          "status": "failed",
+          "error": "Fixture failure"
+        }
+      }
+    ],
+    "expected": {
+      "error": "LLMs.txt generation job failed. Error: Fixture failure"
+    },
+    "calls": [
+      {
+        "method": "POST",
+        "url": "https://api.firecrawl.dev/v1/llmstxt",
+        "body": {
+          "url": "https://example.com",
+          "maxUrls": 50,
+          "showFullText": true,
+          "origin": "js-sdk@1.25.1"
+        },
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      },
+      {
+        "method": "GET",
+        "url": "https://api.firecrawl.dev/v1/llmstxt/fixture-job",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      }
+    ]
+  },
+  {
+    "name": "unexpected status",
+    "replies": [
+      {
+        "status": 200,
+        "body": {
+          "success": true,
+          "id": "fixture-job"
+        }
+      },
+      {
+        "status": 200,
+        "body": {
+          "success": true,
+          "status": "queued"
+        }
+      }
+    ],
+    "expected": {
+      "result": {
+        "success": false,
+        "error": "LLMs.txt generation job terminated unexpectedly"
+      }
+    },
+    "calls": [
+      {
+        "method": "POST",
+        "url": "https://api.firecrawl.dev/v1/llmstxt",
+        "body": {
+          "url": "https://example.com",
+          "maxUrls": 50,
+          "showFullText": true,
+          "origin": "js-sdk@1.25.1"
+        },
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      },
+      {
+        "method": "GET",
+        "url": "https://api.firecrawl.dev/v1/llmstxt/fixture-job",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      }
+    ]
+  },
+  {
+    "name": "POST HTTP400",
+    "replies": [
+      {
+        "status": 400,
+        "body": {
+          "error": "Bad URL",
+          "details": {
+            "field": "url"
+          }
+        }
+      }
+    ],
+    "expected": {
+      "error": "Request failed with status code 400. Error: Bad URL  - {\"field\":\"url\"}"
+    },
+    "calls": [
+      {
+        "method": "POST",
+        "url": "https://api.firecrawl.dev/v1/llmstxt",
+        "body": {
+          "url": "https://example.com",
+          "maxUrls": 50,
+          "showFullText": true,
+          "origin": "js-sdk@1.25.1"
+        },
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      }
+    ]
+  },
+  {
+    "name": "GET HTTP404",
+    "replies": [
+      {
+        "status": 200,
+        "body": {
+          "success": true,
+          "id": "fixture-job"
+        }
+      },
+      {
+        "status": 404,
+        "body": {
+          "error": "Missing"
+        }
+      }
+    ],
+    "expected": {
+      "error": "LLMs.txt generation job not found"
+    },
+    "calls": [
+      {
+        "method": "POST",
+        "url": "https://api.firecrawl.dev/v1/llmstxt",
+        "body": {
+          "url": "https://example.com",
+          "maxUrls": 50,
+          "showFullText": true,
+          "origin": "js-sdk@1.25.1"
+        },
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      },
+      {
+        "method": "GET",
+        "url": "https://api.firecrawl.dev/v1/llmstxt/fixture-job",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      }
+    ]
+  },
+  {
+    "name": "GET HTTP429",
+    "replies": [
+      {
+        "status": 200,
+        "body": {
+          "success": true,
+          "id": "fixture-job"
+        }
+      },
+      {
+        "status": 429,
+        "body": {
+          "error": "Slow down"
+        }
+      }
+    ],
+    "expected": {
+      "error": "Unexpected error occurred while trying to check LLMs.txt generation status. Status code: 429"
+    },
+    "calls": [
+      {
+        "method": "POST",
+        "url": "https://api.firecrawl.dev/v1/llmstxt",
+        "body": {
+          "url": "https://example.com",
+          "maxUrls": 50,
+          "showFullText": true,
+          "origin": "js-sdk@1.25.1"
+        },
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      },
+      {
+        "method": "GET",
+        "url": "https://api.firecrawl.dev/v1/llmstxt/fixture-job",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      }
+    ]
+  },
+  {
+    "name": "GET HTTP500",
+    "replies": [
+      {
+        "status": 200,
+        "body": {
+          "success": true,
+          "id": "fixture-job"
+        }
+      },
+      {
+        "status": 500,
+        "body": {
+          "error": "Server failure",
+          "details": {
+            "fixture": true
+          }
+        }
+      }
+    ],
+    "expected": {
+      "error": "Failed to check LLMs.txt generation status. Status code: 500. Error: Server failure - {\"fixture\":true}"
+    },
+    "calls": [
+      {
+        "method": "POST",
+        "url": "https://api.firecrawl.dev/v1/llmstxt",
+        "body": {
+          "url": "https://example.com",
+          "maxUrls": 50,
+          "showFullText": true,
+          "origin": "js-sdk@1.25.1"
+        },
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      },
+      {
+        "method": "GET",
+        "url": "https://api.firecrawl.dev/v1/llmstxt/fixture-job",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      }
+    ]
+  },
+  {
+    "name": "POST network failure",
+    "replies": [
+      {
+        "networkError": "offline network failure"
+      }
+    ],
+    "expected": {
+      "error": "offline network failure"
+    },
+    "calls": [
+      {
+        "method": "POST",
+        "url": "https://api.firecrawl.dev/v1/llmstxt",
+        "body": {
+          "url": "https://example.com",
+          "maxUrls": 50,
+          "showFullText": true,
+          "origin": "js-sdk@1.25.1"
+        },
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      }
+    ]
+  },
+  {
+    "name": "GET network failure",
+    "replies": [
+      {
+        "status": 200,
+        "body": {
+          "success": true,
+          "id": "fixture-job"
+        }
+      },
+      {
+        "networkError": "offline network failure"
+      }
+    ],
+    "expected": {
+      "error": "offline network failure"
+    },
+    "calls": [
+      {
+        "method": "POST",
+        "url": "https://api.firecrawl.dev/v1/llmstxt",
+        "body": {
+          "url": "https://example.com",
+          "maxUrls": 50,
+          "showFullText": true,
+          "origin": "js-sdk@1.25.1"
+        },
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      },
+      {
+        "method": "GET",
+        "url": "https://api.firecrawl.dev/v1/llmstxt/fixture-job",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      }
+    ]
+  },
+  {
+    "name": "invalid POST JSON",
+    "replies": [
+      {
+        "status": 200,
+        "body": "not JSON",
+        "raw": true
+      }
+    ],
+    "expected": {
+      "error": "Cannot use 'in' operator to search for 'error' in not JSON"
+    },
+    "calls": [
+      {
+        "method": "POST",
+        "url": "https://api.firecrawl.dev/v1/llmstxt",
+        "body": {
+          "url": "https://example.com",
+          "maxUrls": 50,
+          "showFullText": true,
+          "origin": "js-sdk@1.25.1"
+        },
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      }
+    ]
+  },
+  {
+    "name": "missing status",
+    "replies": [
+      {
+        "status": 200,
+        "body": {
+          "success": true,
+          "id": "fixture-job"
+        }
+      },
+      {
+        "status": 200,
+        "body": {
+          "success": true
+        }
+      }
+    ],
+    "expected": {
+      "result": {
+        "success": false,
+        "error": "LLMs.txt generation job terminated unexpectedly"
+      }
+    },
+    "calls": [
+      {
+        "method": "POST",
+        "url": "https://api.firecrawl.dev/v1/llmstxt",
+        "body": {
+          "url": "https://example.com",
+          "maxUrls": 50,
+          "showFullText": true,
+          "origin": "js-sdk@1.25.1"
+        },
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      },
+      {
+        "method": "GET",
+        "url": "https://api.firecrawl.dev/v1/llmstxt/fixture-job",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      }
+    ]
+  },
+  {
+    "name": "optional output fields",
+    "replies": [
+      {
+        "status": 200,
+        "body": {
+          "success": true,
+          "id": "fixture-job"
+        }
+      },
+      {
+        "status": 200,
+        "body": {
+          "success": true,
+          "status": "completed",
+          "data": {}
+        }
+      }
+    ],
+    "expected": {
+      "result": {
+        "success": true,
+        "status": "completed",
+        "data": {}
+      }
+    },
+    "calls": [
+      {
+        "method": "POST",
+        "url": "https://api.firecrawl.dev/v1/llmstxt",
+        "body": {
+          "url": "https://example.com",
+          "maxUrls": 50,
+          "showFullText": true,
+          "origin": "js-sdk@1.25.1"
+        },
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      },
+      {
+        "method": "GET",
+        "url": "https://api.firecrawl.dev/v1/llmstxt/fixture-job",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer fixture-only"
+        }
+      }
+    ]
+  }
+]
