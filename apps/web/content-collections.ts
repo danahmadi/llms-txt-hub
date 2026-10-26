@@ -1,4 +1,10 @@
 import { defineCollection, defineConfig } from '@content-collections/core'
+import { z } from 'zod'
+
+// Validate URLs without changing stored content bytes during schema migration.
+const preservedUrl = z
+  .string()
+  .refine(value => z.url().safeParse(value).success, { error: 'Invalid url' })
 
 // Paths will resolve from the project root
 const websitesPath = '../../packages/content/data/websites'
@@ -12,16 +18,17 @@ const websites = defineCollection({
   name: 'Website',
   directory: websitesPath,
   include: '**/*.mdx',
-  schema: z => ({
+  schema: z.object({
+    content: z.string(),
     slug: z.string().optional(),
     name: z.string(),
     description: z.string(),
-    website: z.string().url(),
-    llmsUrl: z.string().url(),
+    website: preservedUrl,
+    llmsUrl: preservedUrl,
     // Even more flexible validation for llmsFullUrl
     llmsFullUrl: z
       .union([
-        z.string().url(),
+        preservedUrl,
         z.string().refine(val => val === '', {
           message: 'Empty string is allowed'
         }),
@@ -45,7 +52,8 @@ const guides = defineCollection({
   name: 'Guide',
   directory: guidesPath,
   include: '**/*.mdx',
-  schema: z => ({
+  schema: z.object({
+    content: z.string(),
     title: z.string(),
     description: z.string(),
     date: z.string(),
@@ -53,7 +61,7 @@ const guides = defineCollection({
     authors: z.array(
       z.object({
         name: z.string(),
-        url: z.string().url().optional()
+        url: preservedUrl.optional()
       })
     ),
     tags: z.array(z.string()).optional(),
@@ -75,10 +83,11 @@ const resources = defineCollection({
   name: 'Resource',
   directory: resourcesPath,
   include: '**/*.mdx',
-  schema: z => ({
+  schema: z.object({
+    content: z.string(),
     title: z.string(),
     description: z.string(),
-    url: z.string().url().optional(),
+    url: preservedUrl.optional(),
     category: z.string(),
     icon: z.string().optional(),
     featured: z.boolean().optional().default(false)
@@ -93,7 +102,8 @@ const legal = defineCollection({
   name: 'Legal',
   directory: legalPath,
   include: '**/*.mdx',
-  schema: z => ({
+  schema: z.object({
+    content: z.string(),
     title: z.string().optional(),
     lastUpdated: z.string().optional(),
     summary: z.string().optional()
@@ -108,7 +118,8 @@ const docs = defineCollection({
   name: 'Doc',
   directory: docsPath,
   include: '**/*.mdx',
-  schema: z => ({
+  schema: z.object({
+    content: z.string(),
     title: z.string(),
     description: z.string(),
     order: z.number(),
@@ -124,7 +135,8 @@ const extensionUpdates = defineCollection({
   name: 'ExtensionUpdate',
   directory: extensionUpdatesPath,
   include: '**/*.mdx',
-  schema: z => ({
+  schema: z.object({
+    content: z.string(),
     version: z.string(),
     title: z.string(),
     description: z.string(),

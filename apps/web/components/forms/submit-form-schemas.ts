@@ -95,7 +95,7 @@ export const step2Schema = z.object({
     ])
     .optional(),
   category: z.enum(validCategorySlugs, {
-    errorMap: () => ({ message: 'Please select a valid category' })
+    error: () => ({ message: 'Please select a valid category' })
   })
 })
 
@@ -144,7 +144,7 @@ export const submitActionSchema = z.object({
     ])
     .optional(),
   category: z.enum(validCategorySlugs, {
-    errorMap: () => ({ message: 'Please select a valid category' })
+    error: () => ({ message: 'Please select a valid category' })
   }),
   publishedAt: publicationDateSchema
 })
